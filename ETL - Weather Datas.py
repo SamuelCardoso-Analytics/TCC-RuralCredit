@@ -10,7 +10,7 @@ csv_settings = {
 }  # Dictionary for reading CSV
 
 datas = []
-path_file = r'C:\Users\your\path\dados_climaticos'
+path_file = r'C:\Users\samue\Downloads\dados_climaticos'
 
 for file in glob.glob(f'{path_file}/*.csv'):
 
@@ -27,4 +27,4 @@ table = pd.concat(datas, ignore_index=True)
 columns = ['City'] + [col for col in table.columns if col != 'City']
 table = table[columns]  # Change the order of columns
 
-table.to_csv(r'C:\User\your\path\tb_indicadores_climaticos_inmet.csv', index=False)
+table.to_csv(r'C:\Users\samue\Downloads\tb_indicadores_climaticos_inmet.csv', index=False)
