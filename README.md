@@ -8,7 +8,7 @@
 
 Desenvolvido como Trabalho de Conclusão de Curso (Tecnologia em Gestão Empresarial), este projeto busca compreender a sensibilidade da demanda por crédito rural com variáveis macroeconomicas e fatores produtivos. Além disso, explora como é possível se preparar para diferentes cenários econômicos utilizando modelos estatísticos. 
 
-![Análise de Crédito Rural](https://www.cnabrasil.org.br/noticias/pib-do-agronegocio-tem-crescimento-recorde-de-24-31-em-2020)
+<!-- ![Análise de Crédito Rural](https://www.cnabrasil.org.br/noticias/pib-do-agronegocio-tem-crescimento-recorde-de-24-31-em-2020) -->
 
 
 ## 🎯 Contexto e Motivação
@@ -34,9 +34,9 @@ Identificar e quantificar as relações entre variáveis macroeconômicas e indi
 ### Fontes de Dados
 
 - [**Banco Central do Brasil (BCB)**](https://dadosabertos.bcb.gov.br/): Taxa Selic, Taxa de Câmbio e Contratos de Crédito - API
-- [**Fundação Getulio Vargas (FGV)**](https://autenticacao-ibre.fgv.br/ProdutosDigitais/Login): Índice Geral de Preços - Mercado (IGPM), Índice de Confiança Empresarial (ICE) e Produto Interno Bruto (PIB) - CSV
-- [**Centro de Estudos Avançados em Economia Aplicada (CEPEA)**](https://www.cepea.org.br/br/consultas-ao-banco-de-dados-do-site.aspx): Preço commodities - CSV
-- [**Instituto Nacional de Meteorologia (INMET)**](https://bdmep.inmet.gov.br/): Preços de commodities agrícolas - CSV
+- [**Fundação Getulio Vargas (FGV)**](https://autenticacao-ibre.fgv.br/ProdutosDigitais/Login): Índice Geral de Preços (IGPM), Índice de Confiança Empresarial (ICE) e Produto Interno Bruto (PIB) - CSV
+- [**Centro de Estudos Avançados em Economia Aplicada (CEPEA)**](https://www.cepea.org.br/br/consultas-ao-banco-de-dados-do-site.aspx): Preços de Commodities - CSV
+- [**Instituto Nacional de Meteorologia (INMET)**](https://bdmep.inmet.gov.br/): Chuvas, Precipetação Atmosférica e Temperatura - CSV
 - [**Comissão de Valores Mobiliários (CVM)**](https://dados.cvm.gov.br/): Certificado de Recebíveis do Agronegócio (CRA) - CSV
 
 **Período analisado**: Janeiro de 2022 a Dezembro de 2024
