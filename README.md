@@ -1,14 +1,11 @@
 # 📊 Impacto de Variáveis Macroecnômicos e Fatores Produtivos Agrícolas na demanda por Crédito Rural
 
-[![Python](https://img.shields.io/badge/Python-3.9+-blue.svg)](https://www.python.org/)
+[![Python](https://img.shields.io/badge/Python-3.11-blue.svg)](https://www.python.org/)
 [![Status](https://img.shields.io/badge/Status-Concluído-success.svg)]()
 
 ## 📝 Descrição
 
 Desenvolvido como Trabalho de Conclusão de Curso (Tecnologia em Gestão Empresarial), este projeto busca compreender a sensibilidade da demanda por crédito rural com variáveis macroeconomicas e fatores produtivos. Além disso, explora como é possível se preparar para diferentes cenários econômicos utilizando modelos estatísticos. 
-
-<!-- ![Análise de Crédito Rural](https://www.cnabrasil.org.br/noticias/pib-do-agronegocio-tem-crescimento-recorde-de-24-31-em-2020) -->
-
 
 ## 🎯 Contexto e Motivação
 

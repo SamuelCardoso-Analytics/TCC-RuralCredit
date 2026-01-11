@@ -19,12 +19,12 @@ for file in glob.glob(f'{path_file}/*.csv'):
     df = pd.read_csv(file, **csv_settings)
 
     # Name columns and add them to a dataframe
-    df.columns = ['Date_event', 'Days_rainfall', 'Total_rainfall', 'Atmospheric_pressure', 'Temperature']
-    df['City'] = city
+    df.columns = ['Data_Medicao', 'Numero_dias_Precipitacao', 'Precipitacao_total', 'Pressao_Atmosferica', 'Temperatura_media']
+    df['Cidade'] = city
     datas.append(df)
 
 table = pd.concat(datas, ignore_index=True)
-columns = ['City'] + [col for col in table.columns if col != 'City']
+columns = ['Cidade'] + [col for col in table.columns if col != 'Cidade']
 table = table[columns]  # Change the order of columns
 
-table.to_csv(r'C:\User\your\path\tb_indicadores_climaticos_inmet.csv', index=False)
+table.to_csv(r'C:\User\your\path\tb_clima_inmet.csv', index=False)
