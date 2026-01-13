@@ -1,7 +1,6 @@
 import requests
-from pyspark.sql import Window
 from pyspark.sql.types import DateType
-from pyspark.sql.functions import col, to_date, year, month, dayofmonth, lit, row_number, max, concat, lpad, trunc, date_format, left
+from pyspark.sql.functions import col, to_date, dayofmonth, trunc, date_format
 
 data_inicio = '01/01/2022'
 data_final = '31/12/2024'
@@ -57,7 +56,7 @@ df_demanda_credito = (
 )
 
 df_demanda_credito.write.mode('overwrite').saveAsTable('workspace.default.tb_demanda_credito')
-
+display(df_demanda_credito)
 
 ### FATORES PRODUTIVOS AGRÍCOLAS
 # ICE - Pontos de Confiança (Agro)

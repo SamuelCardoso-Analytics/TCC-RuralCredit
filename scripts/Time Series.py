@@ -2,18 +2,9 @@ import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
 
-from pyspark.sql import functions
-from pyspark.sql.types import NumericType
-from pyspark.ml.feature import StandardScaler, VectorAssembler
-
-from sklearn.linear_model import LinearRegression
-from sklearn.metrics import mean_absolute_error, mean_squared_error
-
 from statsmodels.tsa.stattools import adfuller 
 from statsmodels.graphics.tsaplots import plot_acf, plot_pacf
-
 from statsmodels.tsa.statespace.sarimax import SARIMAX
-import itertools
 
 df_normalizado = spark.table('workspace.default.tb_dados_normalizados')
 

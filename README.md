@@ -1,42 +1,76 @@
-# 📊 Impacto de Variáveis Macroecnômicos e Fatores Produtivos Agrícolas na demanda por Crédito Rural
+# 📊 Impact of Macroeconomic Variables and Agricultural Production Factors on the Demand for Rural Credit
 
 [![Python](https://img.shields.io/badge/Python-3.11-blue.svg)](https://www.python.org/)
-[![Status](https://img.shields.io/badge/Status-Concluído-success.svg)]()
+[![Status](https://img.shields.io/badge/Status-Completed-success.svg)]()
 
-## 📝 Descrição
+## 📝 Context
 
-Desenvolvido como Trabalho de Conclusão de Curso (Tecnologia em Gestão Empresarial), este projeto busca compreender a sensibilidade da demanda por crédito rural com variáveis macroeconomicas e fatores produtivos. Além disso, explora como é possível se preparar para diferentes cenários econômicos utilizando modelos estatísticos. 
+### Description
 
-## 🎯 Contexto e Motivação
+Developed as a Final Course Project (Business Management Technology), This project seeks to understand the sensitivity of rural credit demand to macroeconomic variables and productive factors. Additionally, it explores how it is possible to prepare for different economic scenarios using statistical models. 
 
-### Problema
+### Problem
 
-A agricultura, principal setor da economia brasileira, é muito sensivel ao crédito rural, por isso, conhecer quais são os indicadores que mais impactam a  demanda é importante para prevenir de receções e aproveitar oportunidades mercadologicas. 
+Agriculture, the main sector of the Brazilian economy, is very sensitive to rural credit, therefore, knowing which indicators have the greatest impact on demand is important to prepare for adverse situations and take advantage of market opportunities. 
 
-### Objetivo
+### Goal
 
-Identificar e quantificar as relações entre variáveis macroeconômicas e indicadores produtivos agrícolas com a demanda por crédito rural, e utilizar modelos estatisticos para encontrar os melhores cenários.
+Identify and quantify the relationships between macroeconomic variables and agricultural production indicators with the demand for rural credit, and use statistical models to find the best scenarios.
 
-### Conceitos Fundamentais
+### Fundamental Concepts
 
-**Macroeconomia**: São indicadores ou ferramentas para controle da política econômica e monetária, como por exemplo o PIB, a taxa de juros, o câmbio e a inflação.
+**Macroeconomic**: They are indicators or tools for controlling economic and monetary policy, such as GDP (Gross Domestic Product), interest rates, exchange rates, and inflation.
 
-**Agrícolas**: São variáveis condicionantes para a produção rural, como a temperatura e a precipitação de chuva, por exemplo, pois são fatores físicos naturais que influenciam.
+**Agriculture**: They are variables that affect agricultural production, such as temperature and rainfall, for example, as they are natural physical factors that have an influence.
 
-**Crédito Rural**: Modalidade de financiamento destinada a produtores rurais, estando associada às expectativas de produção e preços, como preços das commodities e volume na safra. 
+**Rural Credit**: Financing modality aimed at rural producers, based on production and price expectations, such as commodity prices and harvest volume. 
 
-## 📂 Dados Utilizados
+## 📂 Data Used 
 
-### Fontes de Dados
+### Data Sources
 
-- [**Banco Central do Brasil (BCB)**](https://dadosabertos.bcb.gov.br/): Taxa Selic, Taxa de Câmbio e Contratos de Crédito - API
-- [**Fundação Getulio Vargas (FGV)**](https://autenticacao-ibre.fgv.br/ProdutosDigitais/Login): Índice Geral de Preços (IGPM), Índice de Confiança Empresarial (ICE) e Produto Interno Bruto (PIB) - CSV
-- [**Centro de Estudos Avançados em Economia Aplicada (CEPEA)**](https://www.cepea.org.br/br/consultas-ao-banco-de-dados-do-site.aspx): Preços de Commodities - CSV
-- [**Instituto Nacional de Meteorologia (INMET)**](https://bdmep.inmet.gov.br/): Chuvas, Precipetação Atmosférica e Temperatura - CSV
-- [**Comissão de Valores Mobiliários (CVM)**](https://dados.cvm.gov.br/): Certificado de Recebíveis do Agronegócio (CRA) - CSV
+- [**Banco Central do Brasil (BCB)**](https://dadosabertos.bcb.gov.br/): Selic rate (Brazil's base interest rate), Exchange rate and Credit Contracts - API
+- [**Fundação Getulio Vargas (FGV)**](https://autenticacao-ibre.fgv.br/ProdutosDigitais/Login): IGPM (price inflation index), ICE (business confidence index) e PIB (GDP) - CSV
+- [**Centro de Estudos Avançados em Economia Aplicada (CEPEA)**](https://www.cepea.org.br/br/consultas-ao-banco-de-dados-do-site.aspx): Commodity prices - CSV
+- [**Instituto Nacional de Meteorologia (INMET)**](https://bdmep.inmet.gov.br/): Rainfall, Atmospheric pressure e Temperature - CSV
+- [**Comissão de Valores Mobiliários (CVM)**](https://dados.cvm.gov.br/): CRA (Agribusiness Receivables Certificate) - CSV
 
-**Período analisado**: Janeiro de 2022 a Dezembro de 2024
+**Period analyzed**: January 2022 to December 2024
+
+### Tools and Libraries
+- [**Databricks**](https://login.databricks.com/signup?provider=DB&l=pt-BR&scid=7018Y000001Fi0cQAC&utm_medium=paid+search&utm_source=google&utm_campaign=19829725165&utm_adgroup=147439757256&utm_content=trial&utm_offer=trial&utm_ad=731917902921&utm_term=databricks&gad_source=1&gad_campaignid=19829725165&gbraid=0AAAAABYBeAhHda15kPPFIDjUtw9-JMztZ&gclid=CjwKCAiAjojLBhAlEiwAcjhrDlPAAhrvFx0npdc3nhzsuLzZN0CJWRF5uHdoSWv184ta5Lkxm7qHHxoCMlMQAvD_BwE&tuuid=fbfd3b91-9b8a-430c-b85a-198942daaf68&intent=SIGN_UP&dbx_source=direct&rl_aid=8df46689-73f9-42c6-b642-698357080083&sisu_state=eyJsZWdhbFRleHRTZWVuIjp7Ii9zaWdudXAiOnsidG9zIjp0cnVlLCJwcml2YWN5Ijp0cnVlLCJjb3Jwb3JhdGVFbWFpbFNoYXJpbmciOnRydWV9fX0%3D) - Python 3.11 and SQL 
+- [**pyspark**](https://spark.apache.org/docs/latest/api/python/index.html) - SQL functions
+- [**requests**](https://pypi.org/) - API acess
+- [**pandas**](https://pandas.pydata.org/) - Data processing
+- [**numpy**](https://numpy.org/) - Numerical operations
+- [**matplotlib**](https://matplotlib.org/) - Visualization
+- [**scikit-learn**](https://scikit-learn.org/stable/) - Linear Regression and statistical modeling
+- [**statsmodels**](https://www.statsmodels.org/stable/index.html) - Time series and correlation matrix 
+
+## 📁 Repository Structure
+
+```
+📦 TCC-RuralCredit 
+├── 📂 datas                                      # Processed data
+│   ├── tb_clima_inmet.csv              
+│   ├── tb_commodities_cepea.csv              
+│   ├── tb_cra_cvm.csv              
+│   ├── tb_ice_fgv.csv              
+│   ├── tb_igpm_fgv.csv              
+│   └── tb_pib_fgv.csv                                       
+├── 📂 scripts                                    # Python scripts 
+│   ├── Collection and Creation of Tables.py
+│   ├── Datas Cleansing and Processing.py
+│   ├── Linear Regression.py
+│   └── Time Series.py
+├── 📂 visualizations                             # Graphs and figures
+│   ├── correlacao.png
+│   ├── serie_temporal.png
+│   └── others.png
+└── README.md                                     # This file
+```
+
 
 ---
 
-⭐ **Se este projeto foi útil para você, considere dar uma estrela no repositório!**
+⭐ **If this project was helpful to you, consider giving the repository a star!**
