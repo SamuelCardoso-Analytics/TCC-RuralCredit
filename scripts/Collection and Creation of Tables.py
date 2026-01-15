@@ -2,35 +2,35 @@ import requests
 from pyspark.sql.types import DateType
 from pyspark.sql.functions import col, to_date, dayofmonth, trunc, date_format
 
-data_inicio = '01/01/2022'
-data_final = '31/12/2024'
+start_date = '01/01/2022'
+final_date = '31/12/2024'
 
-### DEMANDA POR CRÉDITO RURAL 
-# Contratos Crédito Rural - Quantidade
+###  DEMAND FOR RURAL CREDIT  
+# Rural Credit Contracts - Quantity and Price
 datas_qntcredito = spark.table('workspace.default.tb_contratos_credito')
 df_qntcredito = datas_qntcredito
 df_qntcredito = (
     df_qntcredito
-    .withColumnRenamed('Data', 'Date_event')
+    .withColumnRenamed('Data', 'Date_event')        
     .withColumnRenamed('QtdInvestimento', 'Qty_credit')
     .withColumnRenamed('VlInvestimento', 'Value_credit')
     .withColumn('Date_event', to_date(col('Date_event'), 'dd/MM/yyyy'))
 )
 
-# Taxa Crédito Rural - Taxa médias mercado (mensal)
-api_txcredito = f'https://api.bcb.gov.br/dados/serie/bcdata.sgs.20758/dados?formato=json&dataInicial={data_inicio}&dataFinal={data_final}'
-response_txcredito = requests.get(api_txcredito)
-datas_txcredito = response_txcredito.json()
-df_txcredito = spark.createDataFrame(datas_txcredito)
-df_txcredito = (
-    df_txcredito
+# Rural Credit Rate - Average market rates (monthly)
+api_rtcredito = f'https://api.bcb.gov.br/dados/serie/bcdata.sgs.20758/dados?formato=json&dataInicial={start_date}&dataFinal={final_date}'
+response_rtcredito = requests.get(api_rtcredito)
+datas_rtcredito = response_rtcredito.json()
+df_rtcredito = spark.createDataFrame(datas_rtcredito)
+df_rtcredito = (
+    df_rtcredito
     .withColumnRenamed('data', 'Date_event')
     .withColumnRenamed('valor', 'Rate_credit')
     .withColumn('Date_event', to_date(col('Date_event'), 'dd/MM/yyyy'))
     .withColumn('Rate_credit', col('Rate_credit').cast('double'))
 )
 
-# CRA - Quantidade de Certificados e Valor Somado
+# CRA - Number of Certificates and Total Value
 df_cra = spark.table('workspace.default.tb_cra_cvm')
 df_cra = (
     df_cra
@@ -45,8 +45,8 @@ df_demanda_credito = (df_qntcredito
                       .join(df_cra, on='Date_event', how='left'))
 
 # Conversões de tipo e ordenação
-df_demanda_credito = (
-    df_demanda_credito
+df_credit_demand = (
+    df_credit_demand
     .withColumn('Qty_credit', col('Qty_credit').cast('double'))
     .withColumn('Value_credit', col('Value_credit').cast('double'))
     .withColumn('Rate_credit', col('Rate_credit').cast('double'))
@@ -55,8 +55,8 @@ df_demanda_credito = (
     .orderBy('Date_event')
 )
 
-df_demanda_credito.write.mode('overwrite').saveAsTable('workspace.default.tb_demanda_credito')
-display(df_demanda_credito)
+df_credit_demand.write.mode('overwrite').saveAsTable('workspace.default.tb_demanda_credito')
+display(df_credit_demand)
 
 ### FATORES PRODUTIVOS AGRÍCOLAS
 # ICE - Pontos de Confiança (Agro)
@@ -115,7 +115,7 @@ df_igpm = spark.table('workspace.default.tb_igpm_fgv')
 df_igpm = df_igpm.withColumn('Data', to_date(col('Data'), 'dd/MM/yyyy'))
 
 # Taxa Selic - anualizada acumulada
-api_selic = f'https://api.bcb.gov.br/dados/serie/bcdata.sgs.1178/dados?formato=json&dataInicial={data_inicio}&dataFinal={data_final}'
+api_selic = f'https://api.bcb.gov.br/dados/serie/bcdata.sgs.1178/dados?formato=json&dataInicial={start_date}&dataFinal={final_date}'
 response_selic = requests.get(api_selic)
 datas_selic = response_selic.json()
 df_selic = spark.createDataFrame(datas_selic)
@@ -129,7 +129,7 @@ df_selicinha = (
 df_selic = df_selic.unionByName(df_selicinha)
 
 # Taxa Câmbio - dolar 
-api_cambio = f'https://api.bcb.gov.br/dados/serie/bcdata.sgs.10813/dados?formato=json&dataInicial={data_inicio}&dataFinal={data_final}'
+api_cambio = f'https://api.bcb.gov.br/dados/serie/bcdata.sgs.10813/dados?formato=json&dataInicial={start_date}&dataFinal={final_date}'
 response_cambio = requests.get(api_cambio)
 datas_cambio = response_cambio.json()
 df_cambio = spark.createDataFrame(datas_cambio)
