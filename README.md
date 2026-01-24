@@ -7,7 +7,7 @@
 
 ### Description
 
-Developed as a Final Course Project (Business Management Technology), This project seeks to understand the sensitivity of rural credit demand to macroeconomic variables and productive factors. Additionally, it explores how it is possible to prepare for different economic scenarios using statistical models. 
+Developed as a Final Course Project (Business Management Technology), this project seeks to understand the sensitivity of rural credit demand to macroeconomic variables and productive factors. Additionally, it explores how it is possible to prepare for different economic scenarios using statistical models. 
 
 ### Problem
 
