@@ -4,105 +4,105 @@ import matplotlib.pyplot as plt
 from pyspark.sql import functions
 from pyspark.sql.types import NumericType
 
-df_main = spark.table('workspace.default.tb_demanda_credito') \
-    .join(spark.table('workspace.default.tb_fatores_agricolas'), on='Date_event', how='left') \
-    .join(spark.table('workspace.default.tb_variaveis_macroeconomicas'), on='Date_event', how='left')
+df_main = spark.table('workspace.default.tb_credit_demand') \
+    .join(spark.table('workspace.default.tb_product_factors'), on='Date_event', how='left') \
+    .join(spark.table('workspace.default.tb_variables_macroeconomic'), on='Date_event', how='left')
 
-df_padronizado = df_main
+df_standardized = df_main
 
-colunas_numericas = [
+numeric_columns = [
     field.name
     for field in df_main.schema.fields
     if isinstance(field.dataType, NumericType)
 ]
 
-for coluna in colunas_numericas:
+for columns in numeric_columns:
     stats = df_main.select(
-        functions.mean(coluna).alias('media'),
-        functions.stddev(coluna).alias('desvio')
+        functions.mean(columns).alias('media'),
+        functions.stddev(columns).alias('desvio')
     ).collect()[0]
 
-    df_padronizado = df_padronizado.withColumn(f'{coluna}_padronizado',
-        functions.round((functions.col(coluna) - stats['media']) / stats['desvio'], 2))
+    df_standardized = df_standardized.withColumn(f'{columns}_padronizado',
+        functions.round((functions.col(columns) - stats['media']) / stats['desvio'], 2))
 
-for coluna in colunas_numericas:
-    df_padronizado = df_padronizado.drop(coluna).withColumnRenamed(f'{coluna}_padronizado', coluna)
+for columns in numeric_columns:
+    df_standardized = df_standardized.drop(columns).withColumnRenamed(f'{columns}_padronizado', columns)
 
-display(df_padronizado)
+display(df_standardized)
 
 results = []
 
-for coluna in colunas_numericas:
+for columns in numeric_columns:
 
-    Q1, Q3 = df_padronizado.approxQuantile(coluna, [0.25, 0.75], 0.01)
+    Q1, Q3 = df_standardized.approxQuantile(columns, [0.25, 0.75], 0.01)
     IQR = Q3 - Q1
-    limite_inferior = Q1 - (1.5 * IQR)
-    limite_superior = Q3 + (1.5 * IQR)
+    lower_limit = Q1 - (1.5 * IQR)
+    upper_limit = Q3 + (1.5 * IQR)
     results.append({
-        'coluna': coluna,
+        'columns': columns,
         'Q1': round(Q1, 2),
         'Q3': round(Q3, 2),
         'IQR': round(IQR, 2),
-        'limite_inferior': round(limite_inferior, 2),
-        'limite_superior': round(limite_superior, 2)
+        'Lower Limit': round(lower_limit, 2),
+        'Upper Limit': round(upper_limit, 2)
     })
 
 df_outliers = pd.DataFrame(results)
 display(df_outliers)
 
-df_pd = df_padronizado.select(['Date_event'] + colunas_numericas).toPandas()
+df_pd = df_standardized.select(['Date_event'] + numeric_columns).toPandas()
 
 for _, row in df_outliers.iterrows():
-    coluna = row['coluna']
-    limite_inferior = row['limite_inferior']
-    limite_superior = row['limite_superior']
+    columns = row['columns']
+    lower_limit = row['Lower Limit']
+    upper_limit = row['Upper Limit']
 
-for coluna in colunas_numericas:
+for columns in numeric_columns:
     plt.figure(figsize=(10, 6)) 
-    plt.scatter(df_pd['Date_event'], df_pd[coluna], color='blue', alpha=0.5)
-    plt.axhline(y=limite_inferior, color='red', linestyle='--', label='Limite Inferior')
-    plt.axhline(y=limite_superior, color='green', linestyle='--', label='Limite Superior')
+    plt.scatter(df_pd['Date_event'], df_pd[columns], color='blue', alpha=0.5)
+    plt.axhline(y=lower_limit, color='red', linestyle='--', label='Lower Limit')
+    plt.axhline(y=upper_limit, color='green', linestyle='--', label='Upper Limit')
     plt.xlabel('Date_event')
-    plt.ylabel(coluna)
-    plt.title(f'Gráfico de Dispersão - {coluna}')
+    plt.ylabel(columns)
+    plt.title(f'Scatter Plot - {columns}')
     plt.legend()
     plt.grid(True)
     plt.show()
 
-colunas_para_limitar = ['Qty_credit', 'Value_credit', 'Rate_credit', 'Qty_cra', 'Price_coffee', 'Price_cotton', 'Total_rainfall', 'Atmospheric_pressure', 'Temperature', 'Agri_pib', 'Rate_igpm', 'Price_dolar']
+process_columns = ['Qty_credit', 'Value_credit', 'Rate_credit', 'Qty_cra', 'Price_coffee', 'Price_cotton', 'Total_rainfall', 'Atmospheric_pressure', 'Temperature', 'Agri_pib', 'Rate_igpm', 'Price_dolar']
 
-df_outliers_filtrado = df_outliers[df_outliers['coluna'].isin(colunas_para_limitar)]
+df_process_outilers = df_outliers[df_outliers['columns'].isin(process_columns)]
 
-df_normalizado = df_padronizado
+df_normalize = df_standardized
 
-for _, row in df_outliers_filtrado.iterrows():
-    coluna = row['coluna']
-    limite_superior = row['limite_superior']
-    limite_inferior = row['limite_inferior']
+for _, row in df_process_outilers.iterrows():
+    columns = row['columns']
+    lower_limit = row['Lower Limit']
+    upper_limit = row['Upper Limit']
 
-    df_normalizado = df_normalizado.withColumn(
-        coluna,
-        functions.when(functions.col(coluna) > limite_superior, limite_superior) \
-            .when(functions.col(coluna) < limite_inferior, limite_inferior) \
-            .otherwise(functions.col(coluna))
+    df_normalize = df_normalize.withColumn(
+        columns,
+        functions.when(functions.col(columns) > upper_limit, upper_limit) \
+            .when(functions.col(columns) < lower_limit, lower_limit) \
+            .otherwise(functions.col(columns))
     )
 
-display(df_normalizado)
+display(df_normalize)
 
-df_normalizado.write.mode("overwrite").saveAsTable('workspace.default.tb_dados_normalizados')
-df_pd = df_normalizado.select('*').toPandas()
+df_normalize.write.mode("overwrite").saveAsTable('workspace.default.tb_standardized_data')
+df_pd = df_normalize.select('*').toPandas()
 
-for _, row in df_outliers_filtrado.iterrows():
-    coluna = row['coluna']
-    limite_inferior = row['limite_inferior']
-    limite_superior = row['limite_superior']
+for _, row in df_process_outilers.iterrows():
+    columns = row['columns']
+    lower_limit = row['Lower Limit']
+    upper_limit = row['Upper Limit']
     
     plt.figure(figsize=(10, 6))
-    plt.scatter(df_pd['Date_event'], df_pd[coluna], color='blue', alpha=0.5)
-    plt.axhline(y=limite_inferior, color='red', linestyle='--', label='Limite Inferior')
-    plt.axhline(y=limite_superior, color='green', linestyle='--', label='Limite Superior')
+    plt.scatter(df_pd['Date_event'], df_pd[columns], color='blue', alpha=0.5)
+    plt.axhline(y=lower_limit, color='red', linestyle='--', label='Lower Limit')
+    plt.axhline(y=upper_limit, color='green', linestyle='--', label='Upper Limit')
     plt.xlabel('Date_event')
-    plt.ylabel(coluna)
-    plt.title(f'Gráfico de Dispersão - {coluna}')
+    plt.ylabel(columns)
+    plt.title(f'Scatter Plot - {columns}')
     plt.legend()
     plt.show()

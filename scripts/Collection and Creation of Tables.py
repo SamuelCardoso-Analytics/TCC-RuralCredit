@@ -7,7 +7,7 @@ final_date = '31/12/2024'
 
 ###  DEMAND FOR RURAL CREDIT  
 # Rural Credit Contracts - Quantity and Price
-datas_qtycredit = spark.table('workspace.default.tb_contratos_credito')
+datas_qtycredit = spark.table('workspace.default.tb_credit_agreements')
 df_qtycredit = datas_qtycredit
 df_qtycredit = (
     df_qtycredit
