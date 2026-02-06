@@ -105,4 +105,5 @@ for _, row in df_process_outilers.iterrows():
     plt.ylabel(columns)
     plt.title(f'Scatter Plot - {columns}')
     plt.legend()
+    plt.grid(True)
     plt.show()

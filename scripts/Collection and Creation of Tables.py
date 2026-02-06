@@ -120,13 +120,13 @@ response_selic = requests.get(api_selic)
 datas_selic = response_selic.json()
 df_selicrt = spark.createDataFrame(datas_selic)
 df_selicrt = df_selicrt.withColumn('Data', to_date(col('Data'), 'dd/MM/yyyy'))
-df_selicrt = (
+df_selicrtupt = (
     df_selicrt
     .filter(dayofmonth(col("Data")) == 3)
     .withColumn("Data", trunc(col("Data"), "MM"))
     .join(df_selicrt, on="Data", how="left_anti")
 )
-df_selicrt = df_selicrt.unionByName(df_selicrt)
+df_selicrt = df_selicrt.unionByName(df_selicrtupt)
 
 # Exchange Rate - dolar 
 api_exchange = f'https://api.bcb.gov.br/dados/serie/bcdata.sgs.10813/dados?formato=json&dataInicial={start_date}&dataFinal={final_date}'
@@ -134,13 +134,13 @@ response_exchange = requests.get(api_exchange)
 datas_exchange = response_exchange.json()
 df_exchangert = spark.createDataFrame(datas_exchange)
 df_exchangert = df_exchangert.withColumn('Data', to_date(col('Data'), "dd/MM/yyyy"))
-df_exchangert = (
+df_exchangertupt = (
     df_exchangert
     .filter(dayofmonth(col("Data")) == 3)
     .withColumn('Data', trunc(col('Data'), 'MM'))
     .join(df_exchangert, on='Data', how='left_anti')
 )
-df_exchangert = df_exchangert.unionByName(df_exchangert)
+df_exchangert = df_exchangert.unionByName(df_exchangertupt)
 
 df_variables_macroeconomic = df_pib.join(df_igpm, on='Data', how='left').join(df_selicrt.withColumnRenamed('valor', 'Rate_selic'), on='Data', how='left').join(df_exchangert.withColumnRenamed('valor', 'Price_dolar'), on='Data', how='left')
 
