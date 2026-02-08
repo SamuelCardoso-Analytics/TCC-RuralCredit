@@ -87,7 +87,7 @@ df_weather = (
     .withColumnRenamed('Pressao_Atmosferica', 'Atmospheric_pressure')
     .withColumnRenamed('Temperatura_media', 'Temperature')
 )
-    
+
 df_product_factors = df_ice.join(df_commodities, on='Date_event', how='left').join(df_weather, on='Date_event', how='left')
 df_product_factors = ( 
     df_product_factors

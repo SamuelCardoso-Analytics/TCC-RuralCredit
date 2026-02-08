@@ -44,7 +44,7 @@ print(f"Raiz do Erro Quadrático Médio (RMSE): {round(mean_squared_error(Y, Y_p
 dependent = 'Value_credit'
 independents = ['Qty_credit','Points_ice','Rate_selic']  
 
-X = df_standardized.select(independents).toPandas().values  
+X = df_standardized.select(independents).toPandas().values  x'
 Y = df_standardized.select(dependent).toPandas().values.flatten()
 
 model = LinearRegression()

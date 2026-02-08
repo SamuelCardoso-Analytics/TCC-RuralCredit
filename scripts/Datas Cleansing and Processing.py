@@ -10,6 +10,7 @@ df_main = spark.table('workspace.default.tb_credit_demand') \
 
 df_standardized = df_main
 
+## Z-SCORE STANDARDIZED
 numeric_columns = [
     field.name
     for field in df_main.schema.fields
@@ -18,22 +19,21 @@ numeric_columns = [
 
 for columns in numeric_columns:
     stats = df_main.select(
-        functions.mean(columns).alias('media'),
-        functions.stddev(columns).alias('desvio')
+        functions.mean(columns).alias('average'),
+        functions.stddev(columns).alias('deviation')
     ).collect()[0]
 
-    df_standardized = df_standardized.withColumn(f'{columns}_padronizado',
-        functions.round((functions.col(columns) - stats['media']) / stats['desvio'], 2))
+    df_standardized = df_standardized.withColumn(f'{columns}_standardized',
+        functions.round((functions.col(columns) - stats['average']) / stats['deviation'], 2))
 
 for columns in numeric_columns:
-    df_standardized = df_standardized.drop(columns).withColumnRenamed(f'{columns}_padronizado', columns)
+    df_standardized = df_standardized.drop(columns).withColumnRenamed(f'{columns}_standardized', columns)
 
 display(df_standardized)
 
+## INTERQUARTILE RANGE
 results = []
-
 for columns in numeric_columns:
-
     Q1, Q3 = df_standardized.approxQuantile(columns, [0.25, 0.75], 0.01)
     IQR = Q3 - Q1
     lower_limit = Q1 - (1.5 * IQR)
@@ -43,8 +43,8 @@ for columns in numeric_columns:
         'Q1': round(Q1, 2),
         'Q3': round(Q3, 2),
         'IQR': round(IQR, 2),
-        'Lower Limit': round(lower_limit, 2),
-        'Upper Limit': round(upper_limit, 2)
+        'Lower_limit': round(lower_limit, 2),
+        'Upper_limit': round(upper_limit, 2)
     })
 
 df_outliers = pd.DataFrame(results)
@@ -52,10 +52,11 @@ display(df_outliers)
 
 df_pd = df_standardized.select(['Date_event'] + numeric_columns).toPandas()
 
+# Outiliers Visualization
 for _, row in df_outliers.iterrows():
     columns = row['columns']
-    lower_limit = row['Lower Limit']
-    upper_limit = row['Upper Limit']
+    lower_limit = row['Lower_limit']
+    upper_limit = row['Upper_limit']
 
 for columns in numeric_columns:
     plt.figure(figsize=(10, 6)) 
@@ -69,16 +70,17 @@ for columns in numeric_columns:
     plt.grid(True)
     plt.show()
 
+## OUTLIERS CLEANSING
 process_columns = ['Qty_credit', 'Value_credit', 'Rate_credit', 'Qty_cra', 'Price_coffee', 'Price_cotton', 'Total_rainfall', 'Atmospheric_pressure', 'Temperature', 'Agri_pib', 'Rate_igpm', 'Price_dolar']
 
 df_process_outilers = df_outliers[df_outliers['columns'].isin(process_columns)]
-
 df_normalize = df_standardized
 
+# Replace Outliers datas
 for _, row in df_process_outilers.iterrows():
     columns = row['columns']
-    lower_limit = row['Lower Limit']
-    upper_limit = row['Upper Limit']
+    lower_limit = row['Lower_limit']
+    upper_limit = row['Upper_limit']
 
     df_normalize = df_normalize.withColumn(
         columns,
@@ -92,10 +94,11 @@ display(df_normalize)
 df_normalize.write.mode("overwrite").saveAsTable('workspace.default.tb_standardized_data')
 df_pd = df_normalize.select('*').toPandas()
 
+# Results Visualization
 for _, row in df_process_outilers.iterrows():
     columns = row['columns']
-    lower_limit = row['Lower Limit']
-    upper_limit = row['Upper Limit']
+    lower_limit = row['Lower_limit']
+    upper_limit = row['Upper_limit']
     
     plt.figure(figsize=(10, 6))
     plt.scatter(df_pd['Date_event'], df_pd[columns], color='blue', alpha=0.5)
