@@ -8,41 +8,50 @@ from statsmodels.tsa.statespace.sarimax import SARIMAX
 df_standardized = spark.table('workspace.default.tb_standardized_data')
 
 df_series = pd.DataFrame({
-    'Data': df_standardized.select('Date_event').toPandas()['Date_event'],
-    'Valores': df_standardized.select('Qty_credit').toPandas()['Qty_credit']
+    'Date': df_standardized.select('Date_event').toPandas()['Date_event'],
+    'Values': df_standardized.select('Qty_credit').toPandas()['Qty_credit']
 })
 
+## 1 - SIMPLE TIME SERIES
+# Check if there series is temporal trend  
+title = 'Time Series: Visual Inspection'
 plt.figure(figsize=(10, 5))
-plt.plot(df_series['Data'], df_series['Valores'], marker='o')
-plt.title('Série Temporal: Verificação Visual')
-plt.xlabel('Data')
-plt.ylabel('Valores')
+plt.plot(df_series['Date'], df_series['Values'], marker='o')
+plt.title(title)
+plt.xlabel('Date')
+plt.ylabel('Values')
 plt.grid()
+plt.savefig(f'/Workspace/Users/samuucardosoo@gmail.com/TCC-RuralCredit/visualizations/{title}.png')
+plt.show()
+
+# Identify Seasonality
+title = 'ACF - Autocorrelation Function '
+plt.figure(figsize=(12, 4))
+plot_acf(df_series['Values'], lags=12)
+plt.title(title)
+plt.tight_layout()
+plt.savefig(f'/Workspace/Users/samuucardosoo@gmail.com/TCC-RuralCredit/visualizations/{title}.png')
 plt.show()
 
 # 
-plt.figure(figsize=(12, 4))
-plot_acf(df_series['Valores'], lags=12)
-plt.title('ACF')
-plt.tight_layout()
-plt.show()
-
+title = 'PACF - Partial Autocorrelation Function'
 max_lag = min(12, len(df_series) // 2 - 1)
 fig, ax = plt.subplots(figsize=(7, 4))
-plot_pacf(df_series['Valores'], lags=max_lag, ax=ax)
-plt.title('PACF - Função de Autocorrelação Parcial')
+plot_pacf(df_series['Values'], lags=max_lag, ax=ax)
+plt.title(title)
 plt.tight_layout()
+plt.savefig(f'/Workspace/Users/samuucardosoo@gmail.com/TCC-RuralCredit/visualizations/{title}.png')
 plt.show()
 
-result = adfuller(df_series['Valores']) 
-print('Estatística do Teste ADF:', round(result[0], 4)) 
-print('p-valor:', round(result[1], 4)) 
+result = adfuller(df_series['Value']) 
+print('ADF Test:', round(result[0], 4)) 
+print('p-value:', round(result[1], 4)) 
 if result[1] < 0.05: 
-    print('A série é estacionária') 
+    print('The series is stationary') 
 else:
-    print('A série não é estacionária') 
+    print('The series is not stationary') 
 
-# 
+## 2 - 
 models = [
     ((1, 0, 0), (1, 0, 0, 12)), 
     ((1, 0, 1), (1, 0, 0, 12)),  
@@ -68,11 +77,12 @@ for order, seasonal_order in models:
 df_results = pd.DataFrame(results).sort_values('AIC')
 display(df_results)
 
+# 
 model = SARIMAX(df_series['Valores'], order=(1, 0, 0), seasonal_order=(1, 0, 0, 12))  
 correction = model.fit(disp=False)
 print(correction.summary())
 
-# 
+## 3 - 
 y = df_series['Valores']
 
 model = SARIMAX(y, order=(1, 0, 0), seasonal_order=(1, 0, 0, 12))  

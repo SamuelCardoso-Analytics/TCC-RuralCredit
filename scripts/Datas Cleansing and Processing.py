@@ -10,7 +10,7 @@ df_main = spark.table('workspace.default.tb_credit_demand') \
 
 df_standardized = df_main
 
-## Z-SCORE STANDARDIZED
+## 1 - Z-SCORE STANDARDIZED
 numeric_columns = [
     field.name
     for field in df_main.schema.fields
@@ -31,7 +31,7 @@ for columns in numeric_columns:
 
 display(df_standardized)
 
-## INTERQUARTILE RANGE
+## 2 - INTERQUARTILE RANGE
 results = []
 for columns in numeric_columns:
     Q1, Q3 = df_standardized.approxQuantile(columns, [0.25, 0.75], 0.01)
@@ -59,18 +59,20 @@ for _, row in df_outliers.iterrows():
     upper_limit = row['Upper_limit']
 
 for columns in numeric_columns:
+    title = f'Scatter Plot: {columns}'
     plt.figure(figsize=(10, 6)) 
     plt.scatter(df_pd['Date_event'], df_pd[columns], color='blue', alpha=0.5)
     plt.axhline(y=lower_limit, color='red', linestyle='--', label='Lower Limit')
     plt.axhline(y=upper_limit, color='green', linestyle='--', label='Upper Limit')
     plt.xlabel('Date_event')
     plt.ylabel(columns)
-    plt.title(f'Scatter Plot - {columns}')
+    plt.title(title)
     plt.legend()
     plt.grid(True)
+    plt.savefig(f'/Workspace/Users/samuucardosoo@gmail.com/TCC-RuralCredit/visualizations/{title}.png')
     plt.show()
 
-## OUTLIERS CLEANSING
+## 3 - OUTLIERS CLEANSING
 process_columns = ['Qty_credit', 'Value_credit', 'Rate_credit', 'Qty_cra', 'Price_coffee', 'Price_cotton', 'Total_rainfall', 'Atmospheric_pressure', 'Temperature', 'Agri_pib', 'Rate_igpm', 'Price_dolar']
 
 df_process_outilers = df_outliers[df_outliers['columns'].isin(process_columns)]
@@ -100,13 +102,15 @@ for _, row in df_process_outilers.iterrows():
     lower_limit = row['Lower_limit']
     upper_limit = row['Upper_limit']
     
+    title = f'Scatter Plot Clean: {columns}'
     plt.figure(figsize=(10, 6))
     plt.scatter(df_pd['Date_event'], df_pd[columns], color='blue', alpha=0.5)
     plt.axhline(y=lower_limit, color='red', linestyle='--', label='Lower Limit')
     plt.axhline(y=upper_limit, color='green', linestyle='--', label='Upper Limit')
     plt.xlabel('Date_event')
     plt.ylabel(columns)
-    plt.title(f'Scatter Plot - {columns}')
+    plt.title(title)
     plt.legend()
     plt.grid(True)
+    plt.savefig(f'/Workspace/Users/samuucardosoo@gmail.com/TCC-RuralCredit/visualizations/{title}.png')
     plt.show()
