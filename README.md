@@ -54,7 +54,8 @@ Identify and quantify the relationships between macroeconomic variables and agri
 ├── 📂 datas                                      # Processed data
 │   ├── tb_clima_inmet.csv              
 │   ├── tb_commodities_cepea.csv              
-│   ├── tb_cra_cvm.csv              
+│   ├── tb_cra_cvm.csv
+│   ├── tb_credit_agreements.csv              
 │   ├── tb_ice_fgv.csv              
 │   ├── tb_igpm_fgv.csv              
 │   └── tb_pib_fgv.csv                                       
@@ -64,9 +65,13 @@ Identify and quantify the relationships between macroeconomic variables and agri
 │   ├── Linear Regression.py
 │   └── Time Series.py
 ├── 📂 visualizations                             # Graphs and figures
-│   ├── correlacao.png
-│   ├── serie_temporal.png
-│   └── others.png
+│   ├── ACF - Autocorrelation Function.png
+│   ├── Credit Demand Forecast - SARIMA.png
+│   ├── Frist Test - Multiple Linear Regression.png
+│   ├── PACF - Partial Autocorrelation Function.png
+│   ├── Scatter Plot Clean:(...).png         # more 31 plots
+│   ├── Second Test - Multiple Linear Regression.png
+│   └── Simple Time Series.png
 └── README.md                                     # This file
 ```
 
