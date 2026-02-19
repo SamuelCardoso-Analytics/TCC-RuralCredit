@@ -25,7 +25,7 @@ plt.savefig(f'/Workspace/Users/samuucardosoo@gmail.com/TCC-RuralCredit/visualiza
 plt.show()
 
 # Identify Seasonality
-title = 'ACF - Autocorrelation Function '
+title = 'ACF - Autocorrelation Function'
 plt.figure(figsize=(12, 4))
 plot_acf(df_series['Values'], lags=12)
 plt.title(title)

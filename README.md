@@ -66,6 +66,7 @@ Identify and quantify the relationships between macroeconomic variables and agri
 │   └── Time Series.py
 ├── 📂 visualizations                             # Graphs and figures
 │   ├── ACF - Autocorrelation Function.png
+│   ├── Correlation Matrix.png
 │   ├── Credit Demand Forecast - SARIMA.png
 │   ├── Frist Test - Multiple Linear Regression.png
 │   ├── PACF - Partial Autocorrelation Function.png
@@ -81,7 +82,7 @@ Identify and quantify the relationships between macroeconomic variables and agri
 
 A primeira etapa foi a coleta de dados confiaveis, originais e atualizados das fontes citadas anteriormente, e no tratamento convertendo e renomeando as colunas. Os dados serão divididos em variáveis dependentes, relacionados a crédito rural, e pelas variáveis independentes, relacionadas a indicadores macroeconômicas e fatores produtivos. 
 
-**`Exemplo em código:`**
+**`Code example:`**
 ```python 
 datas_qtycredit = spark.table('workspace.default.tb_credit_agreements')
 df_qtycredit = datas_qtycredit
@@ -121,7 +122,7 @@ display(df_credit_demand)
 
 O Z-score é uma técnica estatística de padronização, colocando as variáveis em uma escala comum ao transformar os dados para média de 0 e um desvio-padrão de 1. Ele tira o foco do valor absoluto e o coloca no contexto, indicando quantos desvios-padrão um ponto de dado está distante da média de um conjunto de dados, permitindo comparações.
 
-**`Exemplo em código:`**
+**`Code example:`**
 ```python 
 numeric_columns = [
     field.name
@@ -148,7 +149,7 @@ display(df_standardized)
 
 O intervalo interquartil é uma medida que indica o valor abaixo do qual parte das observações se encontram, e serve para encontrar outilers. Esse valor é calculado para dois grupos observados, correspondendo 25% e 75% da amostra. Ele representa a dispersão entre os dados, e para estimar os possíveis limites de dispersão normais é calculado o limite inferior e superior.
 
-**`Exemplo em código:`**
+**`Code example:`**
 ```python 
 results = []
 for columns in numeric_columns:
@@ -172,16 +173,15 @@ df_pd = df_standardized.select(['Date_event'] + numeric_columns).toPandas()
 
 No primeiro gráfico, as duas últimas observações estão acima do limite superior, são outilers. No segundo gráfico, os outilers foram substituidos pela média das observações e reajustado para ser usado em modelos. 
 
-<p align="center">
-  <img src="visualizations/Scatter Plot: Price_coffee.png" width="49.5%">
-  <img src="visualizations/Scatter Plot Clean: Price_coffee.png" width="49.5%">
-</p>
+<p align='center'>
+<img src='visualizations/Scatter Plot: Price_coffee.png' width='49.5%'>
+<img src='visualizations/Scatter Plot Clean: Price_coffee.png' width='49.5%'>
 
 ### 4° - Correlation Matrix 
 
 A Matriz de Correlação também é uma ferramenta da estatistica usada para encontrar as variáveis mais correlacionadas com a variável dependente. Ela exibe os coeficientes de correlação entre diferentes pares de dados, representando a força de uma variável em relação a outra, onde quanto mais próximo de 1, correlação positiva, e quanto mais próximo do -1, correlação negativa.
 
-**`Exemplo em código:`**
+**`Code example:`**
 ```python 
 df_standardized = spark.table('workspace.default.tb_standardized_data')
 
@@ -198,15 +198,154 @@ display(correlation.round(2))
 
 Abaixo está a Matriz de Correlação expressa com Escala de Cores, para melhor visualização. As três primeiras colunas são as variáveis de estudo, quantidade, valores e taxas médias, respectivamente. A primeira coluna representa a demanda, e como é perceptível, o valor de crédito, preço de CRA, PIB e ICE possuem correlação positiva.
 
-<p align="center">
-<img src="image_1771267776953.png" width="70%">
+<p align='center'>
+<img src='visualizations/Correlation Matrix.png' width='100%'>
 
 ### 5° - Linear Regression
 
+Texto 1
+
+**`Code example:`**
+```python
+title = 'Frist Test - Multiple Linear Regression'
+dependent = 'Qty_credit'
+independents = ['Value_credit','Market_pib','Rate_igpm']  
+
+X = df_standardized.select(independents).toPandas().values  
+Y = df_standardized.select(dependent).toPandas().values.flatten()
+
+model = LinearRegression()
+model.fit(X, Y)
+Y_pred = model.predict(X)
+
+plt.scatter(Y, Y_pred, color='blue', label='Original Data', alpha=0.5)
+plt.plot([Y.min(), Y.max()], [Y.min(), Y.max()], 'r--', label='Regression Line', lw=2)
+plt.title(title)
+plt.xlabel(dependent)
+plt.ylabel(independents)
+plt.legend()
+plt.grid(True)
+plt.show()
+
+print(f'Mean Absolute Error (MAE): {round(mean_absolute_error(Y, Y_pred),2)}') 
+print(f'Mean Squared Error (MSE): {round(mean_squared_error(Y, Y_pred),2)}') 
+print(f'Root Mean Squared Error (RMSE): {round(mean_squared_error(Y, Y_pred),2):.2f}') 
+```
+
+Texto 2
+
+<p align='center'>
+<img src='visualizations/Frist Test - Multiple Linear Regression.png' width='49.5%'>
+<img src='visualizations/Second Test - Multiple Linear Regression.png' width='49.5%'>
 
 ### 6° - Time Series
 
-    
+Texto 1
+
+**`Code example:`**
+```python
+# Identify Seasonality
+title = 'ACF - Autocorrelation Function '
+plt.figure(figsize=(12, 4))
+plot_acf(df_series['Values'], lags=12)
+plt.title(title)
+plt.tight_layout()
+plt.show()
+
+# Identify Stationarity
+title = 'PACF - Partial Autocorrelation Function'
+max_lag = min(12, len(df_series) // 2 - 1)
+fig, ax = plt.subplots(figsize=(7, 4))
+plot_pacf(df_series['Values'], lags=max_lag, ax=ax)
+plt.title(title)
+plt.tight_layout()
+plt.show()
+
+result = adfuller(df_series['Values']) 
+print('ADF Test:', round(result[0], 4)) # Augmented Dickey-Fuller
+print('p-value:', round(result[1], 4)) 
+if result[1] < 0.05: 
+    print('The series is stationary') 
+else:
+    print('The series is not stationary') 
+```
+
+Texto 2
+
+<p align='center'>
+<img src='visualizations/ACF - Autocorrelation Function.png' width='49.5%'>
+<img src='visualizations/PACF - Partial Autocorrelation Function.png' width='49.5%'>
+
+Texto 3
+
+**`Code example:`**
+```python
+models = [
+    ((1, 0, 0), (1, 0, 0, 12)), 
+    ((1, 0, 1), (1, 0, 0, 12)),  
+    ((2, 0, 0), (1, 0, 0, 12)),   
+    ((1, 0, 1), (1, 0, 1, 12)),  
+    ((2, 0, 1), (1, 0, 0, 12)),  
+]
+
+results = []
+for order, seasonal_order in models:
+    try: 
+        model = SARIMAX(df_series['Values'], order=order, seasonal_order=seasonal_order)
+        fitted = model.fit(disp=False)
+        results.append({
+            'model': f'SARIMA{order}{seasonal_order}', 
+            'AIC': round(fitted.aic, 4),             # Akaike Information Criterion
+            'BIC': round(fitted.bic, 4),             # Bayesian Information Criterion
+            'RMSE': round(np.sqrt(fitted.mse), 4)    # Root Mean Square Error
+        })
+    except:
+        continue
+
+df_results = pd.DataFrame(results).sort_values('AIC')
+display(df_results)
+
+model = SARIMAX(df_series['Values'], order=(1, 0, 0), seasonal_order=(1, 0, 0, 12))  
+correction = model.fit(disp=False)
+print(correction.summary())
+```
+
+Texto 4
+
+**`Code example:`**
+```python
+y = df_series['Values']
+model = SARIMAX(y, order=(1, 0, 0), seasonal_order=(1, 0, 0, 12))  
+correction = model.fit(disp=False)
+n_steps = 6  
+forecast = correction.forecast(steps=n_steps)
+
+plt.figure(figsize=(14, 7))
+plt.plot(y.index, y.values, label='Historical Data', linewidth=2.5, color='#1f77b4')
+plt.plot(y.index, correction.fittedvalues, label='Adjusted Values', alpha=0.8, linestyle='--', color='#ff7f0e', linewidth=2)
+
+last_date = y.index[-1]
+if isinstance(last_date, pd.Timestamp):
+    forecast_index = pd.date_range(start=last_date, periods=n_steps+1, freq='M')[1:]
+else:
+    forecast_index = range(len(y), len(y) + n_steps)
+
+title = 'Credit Demand Forecast - SARIMA'
+plt.plot(forecast_index, forecast, label='Forecast', color='#d62728', linewidth=2.5, marker='o', markersize=6)
+plt.title(title, fontsize=16)
+plt.xlabel('Time Period', fontsize=12)
+plt.ylabel('Credit Demand', fontsize=12)
+plt.legend(loc='best', fontsize=11)
+plt.grid(True, alpha=0.3)
+plt.tight_layout()
+plt.show()
+```
+
+Texto 5
+
+<p align='center'>
+<img src='visualizations/Credit Demand Forecast - SARIMA.png' width='100%'>
+
 ---
 
 ⭐ **If this project was helpful to you, consider giving the repository a star!**
