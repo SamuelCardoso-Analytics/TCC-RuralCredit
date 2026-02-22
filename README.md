@@ -203,7 +203,7 @@ Abaixo está a Matriz de Correlação expressa com Escala de Cores, para melhor 
 
 ### 5° - Linear Regression
 
-Texto 1
+A Regressão Linear Múltipla tem como objetivo identificar as variaveis com maior impactam na demanda, dado que elas apresentam relações lineares e há múltiplas variáveis independentes. Entretanto, os dados foram escolhidos para evitar o problema de multicolinearidade, que acontece quando as variáveis dependentes tem maior correlação entre si do que com a variável independente, trazendo falsa percepção ao modelo. 
 
 **`Code example:`**
 ```python
@@ -232,7 +232,7 @@ print(f'Mean Squared Error (MSE): {round(mean_squared_error(Y, Y_pred),2)}')
 print(f'Root Mean Squared Error (RMSE): {round(mean_squared_error(Y, Y_pred),2):.2f}') 
 ```
 
-Texto 2
+Ambos os gráficos projetam a relação entre os dados originais e a linha de regressão, mostrando uma dispersão controlada dos resíduos. As métricas de avaliação do primeiro teste indicam um MAE de 0,4 e um RMSE de 0,26. Já no segundo teste, o MAE caiu para 0,36 e o RMSE para 0,20. A redução na variância dos erros implica que o modelo final é menos enviesado e generaliza melhor para novos dados, evitando o overfitting.
 
 <p align='center'>
 <img src='visualizations/Frist Test - Multiple Linear Regression.png' width='49.5%'>
@@ -240,12 +240,12 @@ Texto 2
 
 ### 6° - Time Series
 
-Texto 1
+A série temporal é uma função para prever o comportamento de uma variavel. Para verificar o tipo de serie temporal, é necessario realizar o teste de estacionaridade ACF e PACF, que identifica se a série mantêm as propriedades estatísticas constantes ao longo do tempo, viabilizando a previsão.
 
 **`Code example:`**
 ```python
 # Identify Seasonality
-title = 'ACF - Autocorrelation Function '
+title = 'ACF - Autocorrelation Function'
 plt.figure(figsize=(12, 4))
 plot_acf(df_series['Values'], lags=12)
 plt.title(title)
@@ -270,13 +270,7 @@ else:
     print('The series is not stationary') 
 ```
 
-Texto 2
-
-<p align='center'>
-<img src='visualizations/ACF - Autocorrelation Function.png' width='49.5%'>
-<img src='visualizations/PACF - Partial Autocorrelation Function.png' width='49.5%'>
-
-Texto 3
+Após conferir a estacionaridade dos dados, é necessario escolher o melhor modelo para a previsão. A seleção do modelo preditivo é realizada através da comparação dos critérios de informação, AIC e BIC, entre diferentes combinações de parâmetros SARIMA, sendo escolhido o modelo com menores valores.
 
 **`Code example:`**
 ```python
@@ -310,7 +304,7 @@ correction = model.fit(disp=False)
 print(correction.summary())
 ```
 
-Texto 4
+Por o conjunto de dados ser de um período restrito de apenas 3 anos, a previsão se restringiu para olhar somente 6 meses a frente, ou seja, o primeiro semestre de 2025. Estabelecido isso, basta simular e colocar no gráfico. 
 
 **`Code example:`**
 ```python
@@ -341,10 +335,18 @@ plt.tight_layout()
 plt.show()
 ```
 
-Texto 5
+O gráfico mostra as previsões geradas pelo modelo, a série histórica em azul, os valores ajustados em laranja tracejado e a previsão futura em vermelho. A projeção em vermelho indica uma tendência de queda para o primeiro semestre de 2025.
 
 <p align='center'>
 <img src='visualizations/Credit Demand Forecast - SARIMA.png' width='100%'>
+
+## 📚 Results 
+
+**Impacto no Crédito:** Através da Regressão Linear, identificou-se que os indicadores que mais impactam o valor de crédito rural, são a quantidade de crédito disponivel no mercado, a taxa Selic e ICE. A análise confirma a hipotese que juros elevados encarecem o capital e reduzem a oferta, gerando um ciclo de desconfiança que afeta diretamente na queda do ICE e na retração de novos investimentos.  
+
+**Previsão de Crédito:** A previsão com Serie Temporal projetou uma tendencia de queda na quantidade de crédito para o primeiro semestre de 2025. Esse movimento é reflexo direto do comportamento dos indicadores usados na regressão: a manutenção da Selic em patamares altos e a deterioração do ICE, que juntos atuaram como freios para a expansão do crédito no longo prazo.
+
+**Conclusão:** Embora o estudo tenha enfrentado limitações típicas de dados reais, como janelas temporais restritas, a robustez do modelo foi comprovada pela convergência com o cenário atual. A precisão do estudo é evidenciada por manchetes recentes: enquanto meu modelo previa a retração, a **CNN** confirmou que a [Concessão de crédito rural cai 16% no 1º semestre de 2025](https://www.youtube.com/watch?v=03ZWEk-Xmlg). Além disso, a **Serasa** apontava que a [Recuperação judicial cresce no agro em primeiro trimestre de 2025](https://www.serasaexperian.com.br/sala-de-imprensa/agronegocios/recuperacao-judicial-cresce-no-agro-em-primeiro-trimestre-de-2025-o-que-ainda-afeta-fatia-pequena-dentro-do-universo-de-credito-rural-revela-serasa-experian/), reforçando o impacto do cenário macroeconômico modelado neste estudo, validando a eficácia das variáveis escolhidas para antecipar crises no setor.
 
 ---
 
