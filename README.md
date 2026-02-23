@@ -13,7 +13,7 @@ Developed as a Final Course Project (Business Management Technology), this proje
 
 Agriculture, the main sector of the Brazilian economy, is very sensitive to rural credit, therefore, knowing which indicators have the greatest impact on demand is important to prepare for adverse situations and take advantage of market opportunities. 
 
-### Goal
+### v
 
 Identify and quantify the relationships between macroeconomic variables and agricultural production indicators with the demand for rural credit, and use statistical models to find the best scenarios.
 
@@ -80,7 +80,7 @@ Identify and quantify the relationships between macroeconomic variables and agri
 
 ### 1° - Collection and Processing
 
-A primeira etapa foi a coleta de dados confiaveis, originais e atualizados das fontes citadas anteriormente, e no tratamento convertendo e renomeando as colunas. Os dados serão divididos em variáveis dependentes, relacionados a crédito rural, e pelas variáveis independentes, relacionadas a indicadores macroeconômicas e fatores produtivos. 
+The first step was to collect reliable, original, and uptodate data from the sources cited above, and in processing, converting and renaming columns. The data will be divided into dependent variables, about rural credit, and for variables independent, about the macroeconomic indicators and agricultural factors. 
 
 **`Code example:`**
 ```python 
@@ -120,7 +120,7 @@ display(df_credit_demand)
 
 ### 2° - Z-Score Standardized
 
-O Z-score é uma técnica estatística de padronização, colocando as variáveis em uma escala comum ao transformar os dados para média de 0 e um desvio-padrão de 1. Ele tira o foco do valor absoluto e o coloca no contexto, indicando quantos desvios-padrão um ponto de dado está distante da média de um conjunto de dados, permitindo comparações.
+The Z-score is a statistical tool for standardized, where variables to a common scale by transforming the data to a mean of 0 and a standard deviation of 1. It remove the focus from absolute value and places it in context, showing how many standard deviation one data point is far from the average of a data set, creating comparisons.
 
 **`Code example:`**
 ```python 
@@ -147,7 +147,7 @@ display(df_standardized)
 
 ### 3° - Interquartile Range
 
-O intervalo interquartil é uma medida que indica o valor abaixo do qual parte das observações se encontram, e serve para encontrar outilers. Esse valor é calculado para dois grupos observados, correspondendo 25% e 75% da amostra. Ele representa a dispersão entre os dados, e para estimar os possíveis limites de dispersão normais é calculado o limite inferior e superior.
+The Interquartile Range is a measure that shows the value below the observations found, and is used to find outliers. This value is calculated for two observed groups, 25% and 75% of the sample. It is the dispersion between the data, and to identify the possible normal dispersion limits, the lower and upper limits are calculated.
 
 **`Code example:`**
 ```python 
@@ -171,7 +171,7 @@ display(df_outliers)
 df_pd = df_standardized.select(['Date_event'] + numeric_columns).toPandas()
 ```
 
-No primeiro gráfico, as duas últimas observações estão acima do limite superior, são outilers. No segundo gráfico, os outilers foram substituidos pela média das observações e reajustado para ser usado em modelos. 
+The frist plot, the last two observecions are above the upper limits, are outilers. The second plot, the outilers are replaced by the average of the observations and readjusted for use in models. 
 
 <p align='center'>
 <img src='visualizations/Scatter Plot: Price_coffee.png' width='49.5%'>
@@ -179,7 +179,7 @@ No primeiro gráfico, as duas últimas observações estão acima do limite supe
 
 ### 4° - Correlation Matrix 
 
-A Matriz de Correlação também é uma ferramenta da estatistica usada para encontrar as variáveis mais correlacionadas com a variável dependente. Ela exibe os coeficientes de correlação entre diferentes pares de dados, representando a força de uma variável em relação a outra, onde quanto mais próximo de 1, correlação positiva, e quanto mais próximo do -1, correlação negativa.
+The Correlation Matrix also is a statistical tool used to find the variables most correlated with the dependent variable. It displays the correlation coefficients between different pairs of data, showing the strength of one variable in relation to another, where the closer to 1, positive correlation, and the closes -1, negative correlation.
 
 **`Code example:`**
 ```python 
@@ -196,14 +196,14 @@ correlation.insert(0, '', correlation.index)
 display(correlation.round(2))
 ``` 
 
-Abaixo está a Matriz de Correlação expressa com Escala de Cores, para melhor visualização. As três primeiras colunas são as variáveis de estudo, quantidade, valores e taxas médias, respectivamente. A primeira coluna representa a demanda, e como é perceptível, o valor de crédito, preço de CRA, PIB e ICE possuem correlação positiva.
+Below this Correlation Matrix in Heat Map, for better visualization. The three frists columns are the study variables, quantity, values and average rates. The frist column is demand, and how is percepibile, the credit value, CRA price, PIB and ICE has a positive correlation.
 
 <p align='center'>
 <img src='visualizations/Correlation Matrix.png' width='100%'>
 
 ### 5° - Linear Regression
 
-A Regressão Linear Múltipla tem como objetivo identificar as variaveis com maior impactam na demanda, dado que elas apresentam relações lineares e há múltiplas variáveis independentes. Entretanto, os dados foram escolhidos para evitar o problema de multicolinearidade, que acontece quando as variáveis dependentes tem maior correlação entre si do que com a variável independente, trazendo falsa percepção ao modelo. 
+The Multiple Linear Regression has as Goal to identify the variables with the greatest impact on demand, because they show linear relationships and there are multiple independent variables. However, the data were chosen to avoid the problem of multicollinearity, what happens when the dependent variables are higher  correlated with each other than with the independent variable, creating a false model result. 
 
 **`Code example:`**
 ```python
@@ -232,7 +232,7 @@ print(f'Mean Squared Error (MSE): {round(mean_squared_error(Y, Y_pred),2)}')
 print(f'Root Mean Squared Error (RMSE): {round(mean_squared_error(Y, Y_pred),2):.2f}') 
 ```
 
-Ambos os gráficos projetam a relação entre os dados originais e a linha de regressão, mostrando uma dispersão controlada dos resíduos. As métricas de avaliação do primeiro teste indicam um MAE de 0,4 e um RMSE de 0,26. Já no segundo teste, o MAE caiu para 0,36 e o RMSE para 0,20. A redução na variância dos erros implica que o modelo final é menos enviesado e generaliza melhor para novos dados, evitando o overfitting.
+Both plots show the relationship between the original data and the regression line, with controlled dispersion. The metrics for the first test indicate an MAE of 0.4 and an RMSE of 0.26. The second test, the MAE fell to 0.36 and the RMSE to 0.20. The reduction in error variance means that the final model has fewer problems and better models new data, without creating overfitting.
 
 <p align='center'>
 <img src='visualizations/Frist Test - Multiple Linear Regression.png' width='49.5%'>
@@ -240,11 +240,10 @@ Ambos os gráficos projetam a relação entre os dados originais e a linha de re
 
 ### 6° - Time Series
 
-A série temporal é uma função para prever o comportamento de uma variavel. Para verificar o tipo de serie temporal, é necessario realizar o teste de estacionaridade ACF e PACF, que identifica se a série mantêm as propriedades estatísticas constantes ao longo do tempo, viabilizando a previsão.
+The Time Series is a function to predict the behavior of a variable. For check the type of time series, it is necessary to perform the ACF and PACF stationarity tests, that identify if a series has the same statistical properties over time, enabling forecasting.
 
 **`Code example:`**
 ```python
-# Identify Seasonality
 title = 'ACF - Autocorrelation Function'
 plt.figure(figsize=(12, 4))
 plot_acf(df_series['Values'], lags=12)
@@ -252,7 +251,6 @@ plt.title(title)
 plt.tight_layout()
 plt.show()
 
-# Identify Stationarity
 title = 'PACF - Partial Autocorrelation Function'
 max_lag = min(12, len(df_series) // 2 - 1)
 fig, ax = plt.subplots(figsize=(7, 4))
@@ -270,7 +268,7 @@ else:
     print('The series is not stationary') 
 ```
 
-Após conferir a estacionaridade dos dados, é necessario escolher o melhor modelo para a previsão. A seleção do modelo preditivo é realizada através da comparação dos critérios de informação, AIC e BIC, entre diferentes combinações de parâmetros SARIMA, sendo escolhido o modelo com menores valores.
+After checking the stationarity of the data, is necessary to choose the best model for forecasting. The predictive model is selected by comparing the two indicators, AIC and BIC, between different combinations of SARIMA parameters, choosing the model with the lowest values.
 
 **`Code example:`**
 ```python
@@ -342,11 +340,17 @@ O gráfico mostra as previsões geradas pelo modelo, a série histórica em azul
 
 ## 📚 Results 
 
-**Impacto no Crédito:** Através da Regressão Linear, identificou-se que os indicadores que mais impactam o valor de crédito rural, são a quantidade de crédito disponivel no mercado, a taxa Selic e ICE. A análise confirma a hipotese que juros elevados encarecem o capital e reduzem a oferta, gerando um ciclo de desconfiança que afeta diretamente na queda do ICE e na retração de novos investimentos.  
+### Impacto no Crédito 
 
-**Previsão de Crédito:** A previsão com Serie Temporal projetou uma tendencia de queda na quantidade de crédito para o primeiro semestre de 2025. Esse movimento é reflexo direto do comportamento dos indicadores usados na regressão: a manutenção da Selic em patamares altos e a deterioração do ICE, que juntos atuaram como freios para a expansão do crédito no longo prazo.
+Através da Regressão Linear, identificou-se que os indicadores que mais impactam o valor de crédito rural, são a quantidade de crédito disponivel no mercado, a taxa Selic e ICE. A análise confirma a hipotese que juros elevados encarecem o capital e reduzem a oferta, gerando um ciclo de desconfiança que afeta diretamente na queda do ICE e na retração de novos investimentos.  
 
-**Conclusão:** Embora o estudo tenha enfrentado limitações típicas de dados reais, como janelas temporais restritas, a robustez do modelo foi comprovada pela convergência com o cenário atual. A precisão do estudo é evidenciada por manchetes recentes: enquanto meu modelo previa a retração, a **CNN** confirmou que a [Concessão de crédito rural cai 16% no 1º semestre de 2025](https://www.youtube.com/watch?v=03ZWEk-Xmlg). Além disso, a **Serasa** apontava que a [Recuperação judicial cresce no agro em primeiro trimestre de 2025](https://www.serasaexperian.com.br/sala-de-imprensa/agronegocios/recuperacao-judicial-cresce-no-agro-em-primeiro-trimestre-de-2025-o-que-ainda-afeta-fatia-pequena-dentro-do-universo-de-credito-rural-revela-serasa-experian/), reforçando o impacto do cenário macroeconômico modelado neste estudo, validando a eficácia das variáveis escolhidas para antecipar crises no setor.
+### Previsão de Crédito
+
+A previsão com Serie Temporal projetou uma tendencia de queda na quantidade de crédito para o primeiro semestre de 2025. Esse movimento é reflexo direto do comportamento dos indicadores usados na regressão: a manutenção da Selic em patamares altos e a deterioração do ICE, que juntos atuaram como freios para a expansão do crédito no longo prazo.
+
+### Conclusão
+
+Embora o estudo tenha enfrentado limitações típicas de dados reais, como janelas temporais restritas, a robustez do modelo foi comprovada pela convergência com o cenário atual. A precisão do estudo é evidenciada por manchetes recentes: enquanto meu modelo previa a retração, a **CNN** confirmou que a [Concessão de crédito rural cai 16% no 1º semestre de 2025](https://www.youtube.com/watch?v=03ZWEk-Xmlg). Além disso, a **Serasa** apontava que a [Recuperação judicial cresce no agro em primeiro trimestre de 2025](https://www.serasaexperian.com.br/sala-de-imprensa/agronegocios/recuperacao-judicial-cresce-no-agro-em-primeiro-trimestre-de-2025-o-que-ainda-afeta-fatia-pequena-dentro-do-universo-de-credito-rural-revela-serasa-experian/), reforçando o impacto do cenário macroeconômico modelado neste estudo, validando a eficácia das variáveis escolhidas para antecipar crises no setor.
 
 ---
 
